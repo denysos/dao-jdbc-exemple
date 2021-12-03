@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class UtilisateurJPADAO implements IUtilisateurDAO {
 	@Override
-	public void save( Utilisateur object ) {
+	public void create( Utilisateur object ) {
 	
 	}
 	

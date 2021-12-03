@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class ArticleJPADAO implements IDAO<Article, Integer> {
 	@Override
-	public void save( Article object ) {
+	public void create( Article object ) {
 	
 	}
 	

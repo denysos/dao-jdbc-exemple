@@ -6,7 +6,6 @@ import fr.digi.d16.dal.IDAO;
 
 import java.util.Set;
 import java.sql.*;
-import java.util.ResourceBundle;
 
 /**
  * Hello world!
@@ -55,8 +54,12 @@ public class App
     private static void creerArticle() {
         IDAO<Article, Integer> articleDAO = DAOFacotry.getArticleDAO();
         Article article = new Article( 4, "toto" );
-        articleDAO.save( article );
-        
+        try {
+            articleDAO.create( article );
+        } catch ( SQLException e ) {
+            System.err.println(e.getMessage());
+        }
+    
         //Sample without DAO factory
         // try(Connection connection = DriverManager.getConnection( DB_URL, DB_LOGIN, DB_PWD );
         //     Statement st = connection.createStatement();) {
@@ -72,8 +75,11 @@ public class App
         IDAO<Article, Integer> articleDAO = DAOFacotry.getArticleDAO();
         try {
             Set<Article> articleSet = articleDAO.findAll();
-        } catch ( SQLException throwables ) {
-            System.err.println(throwables.getMessage());
+            for(Article article : articleSet) {
+                System.out.println(article);
+            }
+        } catch ( SQLException e ) {
+            System.err.println(e.getMessage());
         }
     
         //Sample without DAO factory

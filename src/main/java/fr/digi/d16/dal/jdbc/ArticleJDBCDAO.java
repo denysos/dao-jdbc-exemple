@@ -9,16 +9,29 @@ import java.util.Set;
 
 public class ArticleJDBCDAO implements IDAO<Article, Integer> {
 	
-	private static final String FIND_ALL_QUERY = "SELECT * from article";
+	private static final String FIND_ALL_QUERY = "SELECT * FROM article";
+	private static final String FIND_BY_ID_QUERY = "SELECT * FROM article WHERE id = %d";
+	private static final String CREATE_QUERY = "INSERT INTO article (REF) VALUES ('%s')";
 	
 	@Override
-	public void save( Article object ) {
-	
+	public void create( Article article ) throws SQLException {
+		Connection connection = PersistenceManager.getConnection();
+		try(Statement st = connection.createStatement()) {
+			st.executeUpdate( String.format( CREATE_QUERY, article.getReference()) );
+		}
 	}
 	
 	@Override
-	public Article findById( Integer integer ) {
-		return null;
+	public Article findById( Integer id ) throws SQLException {
+		Article article = null;
+		Connection connection = PersistenceManager.getConnection();
+		try(Statement st = connection.createStatement();
+				ResultSet rs = st.executeQuery( String.format( FIND_BY_ID_QUERY, id))) {
+			if (rs.next()) {
+				article = new Article( rs.getInt(1),rs.getString( "REF" ) );
+			}
+		}
+		return article;
 	}
 	
 	@Override
@@ -38,11 +51,11 @@ public class ArticleJDBCDAO implements IDAO<Article, Integer> {
 	
 	@Override
 	public void update( Article object ) {
-	
+		//TODO
 	}
 	
 	@Override
 	public void delete( Article object ) {
-	
+		//TODO
 	}
 }

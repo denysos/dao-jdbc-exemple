@@ -10,7 +10,7 @@ public class UilisateurJDBCDAO implements IUtilisateurDAO {
 	
 	//COnstantes de queries
 	@Override
-	public void save( Utilisateur object ) {
+	public void create( Utilisateur object ) {
 	
 	}
 	
