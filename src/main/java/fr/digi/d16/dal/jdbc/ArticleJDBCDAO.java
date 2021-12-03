@@ -11,13 +11,14 @@ public class ArticleJDBCDAO implements IDAO<Article, Integer> {
 	
 	private static final String FIND_ALL_QUERY = "SELECT * FROM article";
 	private static final String FIND_BY_ID_QUERY = "SELECT * FROM article WHERE id = %d";
-	private static final String CREATE_QUERY = "INSERT INTO article (REF) VALUES ('%s')";
+	private static final String CREATE_QUERY = "INSERT INTO article (REF) VALUES (?)";
 	
 	@Override
 	public void create( Article article ) throws SQLException {
 		Connection connection = PersistenceManager.getConnection();
-		try(Statement st = connection.createStatement()) {
-			st.executeUpdate( String.format( CREATE_QUERY, article.getReference()) );
+		try ( PreparedStatement pst = connection.prepareStatement( CREATE_QUERY ) ) {
+			pst.setString( 1, article.getReference() );
+			pst.executeUpdate();
 		}
 	}
 	
@@ -25,10 +26,10 @@ public class ArticleJDBCDAO implements IDAO<Article, Integer> {
 	public Article findById( Integer id ) throws SQLException {
 		Article article = null;
 		Connection connection = PersistenceManager.getConnection();
-		try(Statement st = connection.createStatement();
-				ResultSet rs = st.executeQuery( String.format( FIND_BY_ID_QUERY, id))) {
-			if (rs.next()) {
-				article = new Article( rs.getInt(1),rs.getString( "REF" ) );
+		try ( Statement st = connection.createStatement(); ResultSet rs = st
+				.executeQuery( String.format( FIND_BY_ID_QUERY, id ) ) ) {
+			if ( rs.next() ) {
+				article = new Article( rs.getInt( 1 ), rs.getString( "REF" ) );
 			}
 		}
 		return article;
@@ -39,10 +40,9 @@ public class ArticleJDBCDAO implements IDAO<Article, Integer> {
 		
 		Set<Article> articles = new HashSet<>();
 		Connection connection = PersistenceManager.getConnection();
-		try( Statement st = connection.createStatement();
-			 ResultSet rs = st.executeQuery( FIND_ALL_QUERY)) {
+		try ( Statement st = connection.createStatement(); ResultSet rs = st.executeQuery( FIND_ALL_QUERY ) ) {
 			while ( rs.next() ) {
-				Article article = new Article(rs.getInt(1),rs.getString( "REF" ));
+				Article article = new Article( rs.getInt( 1 ), rs.getString( "REF" ) );
 				articles.add( article );
 			}
 		}

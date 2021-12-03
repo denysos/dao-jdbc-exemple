@@ -1,9 +1,13 @@
 package fr.digi.d16;
 
 import fr.digi.d16.bo.Article;
-import fr.digi.d16.dal.DAOFacotry;
+import fr.digi.d16.bo.Utilisateur;
+import fr.digi.d16.dal.DAOFactory;
 import fr.digi.d16.dal.IDAO;
+import fr.digi.d16.dal.IUtilisateurDAO;
+import fr.digi.d16.dal.jdbc.UtilisateurJDBCDAO;
 
+import java.util.Scanner;
 import java.util.Set;
 import java.sql.*;
 
@@ -25,8 +29,9 @@ public class App
     // }
     public static void main( String[] args )
     {
-        creerArticle();
-        listerArticles();
+        authenticate();
+        //creerArticle();
+        //listerArticles();
         
         // try with resources
         // try(Connection connection = DriverManager.getConnection( DB_URL, DB_LOGIN, DB_PWD )) {
@@ -51,8 +56,33 @@ public class App
         // }
     }
     
+    private static void authenticate() {
+        
+        
+        Scanner sc = new Scanner( System.in );
+        System.out.println("Bienvenue dans mon app...");
+        System.out.println("Merci de vous connecter");
+        System.out.print("Entrer le login : ");
+        String login = sc.nextLine();
+        System.out.print("Entrer le password : ");
+        String password = sc.nextLine();
+    
+        IUtilisateurDAO dao = DAOFactory.getUtilisateurDAO();
+        try {
+            Utilisateur user = dao.findByLoginAndPassword( login, password );
+            if (user != null) {
+                System.out.println("Bienvenue à toi "+ user.getFullname());
+            } else {
+                System.out.println("Erreur d'identification");
+            }
+        } catch ( SQLException e ) {
+            System.err.println(e.getMessage());
+        }
+    
+    }
+    
     private static void creerArticle() {
-        IDAO<Article, Integer> articleDAO = DAOFacotry.getArticleDAO();
+        IDAO<Article, Integer> articleDAO = DAOFactory.getArticleDAO();
         Article article = new Article( 4, "toto" );
         try {
             articleDAO.create( article );
@@ -72,7 +102,7 @@ public class App
         // }
     }
     private static void listerArticles() {
-        IDAO<Article, Integer> articleDAO = DAOFacotry.getArticleDAO();
+        IDAO<Article, Integer> articleDAO = DAOFactory.getArticleDAO();
         try {
             Set<Article> articleSet = articleDAO.findAll();
             for(Article article : articleSet) {

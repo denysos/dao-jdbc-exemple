@@ -2,13 +2,13 @@ package fr.digi.d16.dal;
 
 import fr.digi.d16.bo.Article;
 import fr.digi.d16.dal.jdbc.ArticleJDBCDAO;
-import fr.digi.d16.dal.jdbc.UilisateurJDBCDAO;
+import fr.digi.d16.dal.jdbc.UtilisateurJDBCDAO;
 import fr.digi.d16.dal.jpa.ArticleJPADAO;
 import fr.digi.d16.dal.jpa.UtilisateurJPADAO;
 
 import java.util.ResourceBundle;
 
-public final class DAOFacotry {
+public final class DAOFactory {
 	
 	
 	private static final String STORE_MODE;
@@ -18,7 +18,7 @@ public final class DAOFacotry {
 		STORE_MODE = resourceBundle.getString( "store.mode" );
 	}
 	
-	private DAOFacotry() {
+	private DAOFactory() {
 	}
 	
 	public static IDAO<Article, Integer> getArticleDAO() {
@@ -39,7 +39,7 @@ public final class DAOFacotry {
 		IUtilisateurDAO dao = null;
 		switch ( STORE_MODE ) {
 			case "JDBC" :
-				dao = new UilisateurJDBCDAO();
+				dao = new UtilisateurJDBCDAO();
 				break;
 			case "JPA":
 				dao = new UtilisateurJPADAO();
